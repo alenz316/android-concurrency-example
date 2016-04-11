@@ -1,9 +1,12 @@
 package com.steadfatinnovation.androidconcurrency;
 
 import android.os.Bundle;
+import android.support.annotation.MainThread;
 import android.widget.TextView;
 
 public class CalcThreadedActivity extends AbstractCalcActivity {
+
+    private static final String OUTPUT_KEY = "out_key";
 
     protected TextView mPrimeOutput;
 
@@ -12,9 +15,20 @@ public class CalcThreadedActivity extends AbstractCalcActivity {
         super.onCreate(savedInstanceState);
 
         mPrimeOutput = (TextView) findViewById(R.id.prime_output);
+        if (savedInstanceState != null && mPrimeOutput != null) {
+            mPrimeOutput.setText(savedInstanceState.getString(OUTPUT_KEY));
+        }
     }
 
-    protected void setOutputText(String output) {
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putString(OUTPUT_KEY, mPrimeOutput.getText().toString());
+        super.onSaveInstanceState(outState);
+    }
+
+    @MainThread
+    protected void setOutputText(final String output) {
+
         mPrimeOutput.setText(output);
     }
 

@@ -5,6 +5,8 @@ import android.widget.TextView;
 
 public class CalcMainActivity extends AbstractCalcActivity {
 
+    private static final String OUTPUT_KEY = "out_key";
+
     protected TextView mPrimeOutput;
 
     @Override
@@ -12,6 +14,15 @@ public class CalcMainActivity extends AbstractCalcActivity {
         super.onCreate(savedInstanceState);
 
         mPrimeOutput = (TextView) findViewById(R.id.prime_output);
+        if (savedInstanceState != null && mPrimeOutput != null) {
+            mPrimeOutput.setText(savedInstanceState.getString(OUTPUT_KEY));
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putString(OUTPUT_KEY, mPrimeOutput.getText().toString());
+        super.onSaveInstanceState(outState);
     }
 
     protected void setOutputText(String output) {
