@@ -74,7 +74,9 @@ public class CalcThreadedRightActivity extends AbstractCalcActivity {
 
         @Override
         public void foundPrime(final int count, final int prime) {
+            // RACE CONDITION:
             // Since this is being called on a random thread, detach may have been called
+            // resulting in a NullPointerException
             mCurrentContext.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
