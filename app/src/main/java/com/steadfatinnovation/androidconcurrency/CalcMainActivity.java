@@ -3,7 +3,7 @@ package com.steadfatinnovation.androidconcurrency;
 import android.os.Bundle;
 import android.widget.TextView;
 
-public class CalcMainActivity extends AbstractCalcActivity {
+public class CalcMainActivity extends AbstractCalcActivity implements AbstractCalcActivity.OnPrimeFoundListener {
 
     private static final String OUTPUT_KEY = "out_key";
 
@@ -31,11 +31,11 @@ public class CalcMainActivity extends AbstractCalcActivity {
 
     @Override
     protected void startCalc(int nthPrime, boolean pauseOnPrime) {
-        doCalc(nthPrime, pauseOnPrime);
+        doCalc(nthPrime, pauseOnPrime, this);
     }
 
     @Override
-    protected void foundPrime(int count, int prime) {
+    public void foundPrime(int count, int prime) {
         setOutputText("The " + count + "th prime is " + prime);
     }
 }

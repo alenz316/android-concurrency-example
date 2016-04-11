@@ -4,7 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.MainThread;
 import android.widget.TextView;
 
-public class CalcThreadedActivity extends AbstractCalcActivity {
+public class CalcThreadedActivity extends AbstractCalcActivity implements AbstractCalcActivity.OnPrimeFoundListener{
 
     private static final String OUTPUT_KEY = "out_key";
 
@@ -28,7 +28,6 @@ public class CalcThreadedActivity extends AbstractCalcActivity {
 
     @MainThread
     protected void setOutputText(final String output) {
-
         mPrimeOutput.setText(output);
     }
 
@@ -37,14 +36,14 @@ public class CalcThreadedActivity extends AbstractCalcActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                doCalc(nthPrime, pauseOnPrime);
+                doCalc(nthPrime, pauseOnPrime, CalcThreadedActivity.this);
             }
         }).start();
 
     }
 
     @Override
-    protected void foundPrime(int count, int prime) {
+    public void foundPrime(int count, int prime) {
         setOutputText("The " + count + "th prime is " + prime);
     }
 }

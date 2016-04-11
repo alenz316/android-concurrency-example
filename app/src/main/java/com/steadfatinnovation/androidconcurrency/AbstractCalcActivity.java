@@ -29,9 +29,11 @@ abstract public class AbstractCalcActivity extends AppCompatActivity {
 
     abstract protected void startCalc(int nthPrime, boolean pauseOnPrime);
 
-    abstract protected void foundPrime(int count, int prime);
+    protected interface OnPrimeFoundListener {
+     void foundPrime(int count, int prime);
+    }
 
-    protected void doCalc(int nthPrime, boolean pauseOnPrime) {
+    protected static void doCalc(int nthPrime, boolean pauseOnPrime, OnPrimeFoundListener listener) {
         int count = 0;
 
         int number = 2;
@@ -39,7 +41,7 @@ abstract public class AbstractCalcActivity extends AppCompatActivity {
             if (isPrime(number)) {
                 count++;
 //                Log.e("MATHS", "doCalc: " + number);
-                foundPrime(count, number);
+                listener.foundPrime(count, number);
                 if (pauseOnPrime) {
                     try {
                         Thread.sleep(3000);
@@ -52,7 +54,7 @@ abstract public class AbstractCalcActivity extends AppCompatActivity {
         }
     }
 
-    private boolean isPrime(int number) {
+    private static boolean isPrime(int number) {
         if (number == 0) {
             return false;
         }
