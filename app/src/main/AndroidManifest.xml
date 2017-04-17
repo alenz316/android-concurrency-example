@@ -14,6 +14,7 @@
         <activity android:name=".MainActivity" android:label="Main Example"/>
         <activity android:name=".CalcMainActivity" android:label="Calc Main Thread"/>
         <activity android:name=".CalcThreadedActivity" android:label="Calc Threaded"/>
+        <activity android:name=".CalcThreadedAlmostRightActivity" android:label="Calc Threaded Almost Right"/>
         <activity android:name=".CalcThreadedRightActivity" android:label="Calc Threaded Right"/>
         <service android:name=".SimpleService"/>
         <service android:name=".OtherProcessService"
