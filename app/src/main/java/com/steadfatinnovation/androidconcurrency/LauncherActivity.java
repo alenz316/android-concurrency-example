@@ -45,6 +45,17 @@ public class LauncherActivity extends AppCompatActivity {
             });
         }
 
+        v = findViewById(R.id.launch_calc_threaded_almost_right);
+
+        if (v != null) {
+            v.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(new Intent(LauncherActivity.this, CalcThreadedAlmostRightActivity.class));
+                }
+            });
+        }
+
         v = findViewById(R.id.launch_calc_threaded_right);
 
         if (v != null) {

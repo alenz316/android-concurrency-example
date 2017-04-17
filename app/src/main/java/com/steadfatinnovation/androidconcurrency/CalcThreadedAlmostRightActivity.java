@@ -1,13 +1,10 @@
 package com.steadfatinnovation.androidconcurrency;
 
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.support.annotation.MainThread;
-import android.util.Log;
 import android.widget.TextView;
 
-public class CalcThreadedRightActivity extends AbstractCalcActivity {
+public class CalcThreadedAlmostRightActivity extends AbstractCalcActivity {
 
     private static final String OUTPUT_KEY = "out_key";
 
@@ -26,16 +23,6 @@ public class CalcThreadedRightActivity extends AbstractCalcActivity {
         mThreadHolder = (ThreadHolder) getLastCustomNonConfigurationInstance();
         if (mThreadHolder != null) {
             mThreadHolder.attach(this);
-        }
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        if (isFinishing()) {
-            if (mThreadHolder != null) {
-                mThreadHolder.detach();
-            }
         }
     }
 
@@ -64,22 +51,20 @@ public class CalcThreadedRightActivity extends AbstractCalcActivity {
     }
 
     private static class ThreadHolder implements OnPrimeFoundListener {
-        private CalcThreadedRightActivity mCurrentContext;
-        private final Handler mainHandler;
+        private CalcThreadedAlmostRightActivity mCurrentContext;
 
-        private ThreadHolder(CalcThreadedRightActivity activity, final int nthPrime, final boolean pauseOnPrime) {
+        private ThreadHolder(CalcThreadedAlmostRightActivity activity, final int nthPrime, final boolean pauseOnPrime) {
             this.mCurrentContext = activity;
-            this.mainHandler = new Handler(Looper.getMainLooper());
 
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    CalcThreadedRightActivity.doCalc(nthPrime, pauseOnPrime, CalcThreadedRightActivity.ThreadHolder.this);
+                    CalcThreadedAlmostRightActivity.doCalc(nthPrime, pauseOnPrime, ThreadHolder.this);
                 }
             }, "Threader").start();
         }
 
-        private void attach(CalcThreadedRightActivity activity) {
+        private void attach(CalcThreadedAlmostRightActivity activity) {
             mCurrentContext = activity;
         }
 
@@ -89,18 +74,13 @@ public class CalcThreadedRightActivity extends AbstractCalcActivity {
 
         @Override
         public void foundPrime(final int count, final int prime) {
-            mainHandler.post(new Runnable() {
+            // RACE CONDITION:
+            // Since this is being called on a random thread, detach may have been called
+            // resulting in a NullPointerException
+            mCurrentContext.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    if (mCurrentContext != null) {
-                        if (mCurrentContext.isDestroyed()) {
-                            throw new IllegalStateException("This should never happen if attach and detach are being called in the appropriate places.");
-                        }
-                        mCurrentContext.setOutputText("The " + count + "th prime is " + prime);
-                    } else {
-                        // Ignore the Activity is finished
-                        Log.e("Missed Events", "These missing events should only happen when the activity was finished");
-                    }
+                    mCurrentContext.setOutputText("The " + count + "th prime is " + prime);
                 }
             });
         }
